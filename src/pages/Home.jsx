@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 const Home = () => {
   const [formData, setFormData] = useState({
@@ -7,13 +7,9 @@ const Home = () => {
     Date: '',
     category: '',
   });
-  const [expenses, setExpenses] = useState([]);
 
-  // Load expenses from local storage on initial render
-  useEffect(() => {
-    const storedExpenses = JSON.parse(localStorage.getItem('expenses')) || [];
-    setExpenses(storedExpenses);
-  }, []);
+  // State to manage the array of expense objects
+  const [expenses, setExpenses] = useState([]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,19 +22,19 @@ const Home = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Retrieve existing data and add new data
+    // Add the form data as a new expense object to the expenses array
     const updatedExpenses = [...expenses, formData];
-
-    // Save to local storage
-    localStorage.setItem('expenses', JSON.stringify(updatedExpenses));
-
-    // Update state
     setExpenses(updatedExpenses);
 
     // Clear form fields
     setFormData({ Title: '', Price: '', Date: '', category: '' });
 
     alert('Expense added successfully!');
+  };
+
+  const handleDelete = (indexToRemove) => {
+    const updatedExpenses = expenses.filter((_, index) => index !== indexToRemove);
+    setExpenses(updatedExpenses);
   };
 
   return (
@@ -124,25 +120,35 @@ const Home = () => {
 
       <h3 className="text-lg font-bold mt-8 text-gray-800">Your Expenses:</h3>
       <ul className="mt-4">
-        {expenses.map((expense, index) => (
-          <li
-            key={index}
-            className="mb-2 p-4 border rounded bg-white shadow-sm"
-          >
-            <p>
-              <strong>Title:</strong> {expense.Title}
-            </p>
-            <p>
-              <strong>Price:</strong> ₹{expense.Price}
-            </p>
-            <p>
-              <strong>Date:</strong> {expense.Date}
-            </p>
-            <p>
-              <strong>Category:</strong> {expense.category}
-            </p>
-          </li>
-        ))}
+        {expenses.length > 0 ? (
+          expenses.map((expense, index) => (
+            <li
+              key={index}
+              className="mb-4 p-4 border rounded bg-white shadow-sm relative"
+            >
+              <p>
+                <strong>Title:</strong> {expense.Title}
+              </p>
+              <p>
+                <strong>Price:</strong> ₹{expense.Price}
+              </p>
+              <p>
+                <strong>Date:</strong> {expense.Date}
+              </p>
+              <p>
+                <strong>Category:</strong> {expense.category}
+              </p>
+              <button
+                onClick={() => handleDelete(index)}
+                className="mt-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
+              >
+                Delete
+              </button>
+            </li>
+          ))
+        ) : (
+          <p className="text-gray-500">No expenses added yet.</p>
+        )}
       </ul>
     </div>
   );
