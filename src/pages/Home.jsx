@@ -8,7 +8,6 @@ const Home = () => {
     category: '',
   });
 
-  // State to manage the array of expense objects
   const [expenses, setExpenses] = useState([]);
 
   const handleChange = (e) => {
@@ -21,14 +20,9 @@ const Home = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Add the form data as a new expense object to the expenses array
     const updatedExpenses = [...expenses, formData];
     setExpenses(updatedExpenses);
-
-    // Clear form fields
     setFormData({ Title: '', Price: '', Date: '', category: '' });
-
     alert('Expense added successfully!');
   };
 
@@ -38,7 +32,7 @@ const Home = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-gray-100 rounded shadow-md">
+    <div className="max-w-lg mx-auto p-6 bg-gray-100 rounded shadow-md">
       <form onSubmit={handleSubmit}>
         <h2 className="text-lg font-bold mb-4 text-gray-800">Enter Your Daily Expenses</h2>
 
@@ -119,37 +113,39 @@ const Home = () => {
       </form>
 
       <h3 className="text-lg font-bold mt-8 text-gray-800">Your Expenses:</h3>
-      <ul className="mt-4">
-        {expenses.length > 0 ? (
-          expenses.map((expense, index) => (
-            <li
-              key={index}
-              className="mb-4 p-4 border rounded bg-white shadow-sm relative"
-            >
-              <p>
-                <strong>Title:</strong> {expense.Title}
-              </p>
-              <p>
-                <strong>Price:</strong> ₹{expense.Price}
-              </p>
-              <p>
-                <strong>Date:</strong> {expense.Date}
-              </p>
-              <p>
-                <strong>Category:</strong> {expense.category}
-              </p>
-              <button
-                onClick={() => handleDelete(index)}
-                className="mt-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
-              >
-                Delete
-              </button>
-            </li>
-          ))
-        ) : (
-          <p className="text-gray-500">No expenses added yet.</p>
-        )}
-      </ul>
+      {expenses.length > 0 ? (
+        <table className="w-full mt-4 border-collapse border border-gray-300">
+          <thead>
+            <tr className="bg-gray-200">
+              <th className="border border-gray-300 px-4 py-2">Title</th>
+              <th className="border border-gray-300 px-4 py-2">Price</th>
+              <th className="border border-gray-300 px-4 py-2">Date</th>
+              <th className="border border-gray-300 px-4 py-2">Category</th>
+              <th className="border border-gray-300 px-4 py-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {expenses.map((expense, index) => (
+              <tr key={index}>
+                <td className="border border-gray-300 px-4 py-2">{expense.Title}</td>
+                <td className="border border-gray-300 px-4 py-2">₹{expense.Price}</td>
+                <td className="border border-gray-300 px-4 py-2">{expense.Date}</td>
+                <td className="border border-gray-300 px-4 py-2">{expense.category}</td>
+                <td className="border border-gray-300 px-4 py-2 text-center">
+                  <button
+                    onClick={() => handleDelete(index)}
+                    className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p className="text-gray-500 mt-4">No expenses added yet.</p>
+      )}
     </div>
   );
 };
